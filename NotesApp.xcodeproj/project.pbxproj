@@ -8,7 +8,6 @@
 
 /* Begin PBXBuildFile section */
 		33E37AA2D12950CCEDB5B675 /* Pods_NotesApp.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A0A707BC71834393C27ADBF3 /* Pods_NotesApp.framework */; };
-		3FB2D142A93DAD6285981CC4 /* Pods_TestApp_for_Doubletapp.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E0F2BB11A166F014FCDA9EC3 /* Pods_TestApp_for_Doubletapp.framework */; };
 		A8757C9C2048171200F51E94 /* NotesCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = A8757C9B2048171200F51E94 /* NotesCell.swift */; };
 		A8757CA1204843D900F51E94 /* NoteEditViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A8757CA0204843D900F51E94 /* NoteEditViewController.swift */; };
 		A8757CA3204855E200F51E94 /* DBManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = A8757CA2204855E200F51E94 /* DBManager.swift */; };
@@ -45,7 +44,6 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				3FB2D142A93DAD6285981CC4 /* Pods_TestApp_for_Doubletapp.framework in Frameworks */,
 				33E37AA2D12950CCEDB5B675 /* Pods_NotesApp.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -168,7 +166,6 @@
 				A8E89164204741B300133255 /* Resources */,
 				1B4E81E5D572DD049495B895 /* [CP] Embed Pods Frameworks */,
 				1545C3CB5C2068B55509850B /* [CP] Copy Pods Resources */,
-				A8757C9D20481E6C00F51E94 /* ShellScript */,
 			);
 			buildRules = (
 			);
@@ -249,17 +246,13 @@
 			);
 			inputPaths = (
 				"${SRCROOT}/Pods/Target Support Files/Pods-NotesApp/Pods-NotesApp-frameworks.sh",
-				"${BUILT_PRODUCTS_DIR}/KMPlaceholderTextView/KMPlaceholderTextView.framework",
 				"${BUILT_PRODUCTS_DIR}/Realm/Realm.framework",
 				"${BUILT_PRODUCTS_DIR}/RealmSwift/RealmSwift.framework",
-				"${BUILT_PRODUCTS_DIR}/SwipeCellKit/SwipeCellKit.framework",
 			);
 			name = "[CP] Embed Pods Frameworks";
 			outputPaths = (
-				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/KMPlaceholderTextView.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/Realm.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/RealmSwift.framework",
-				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/SwipeCellKit.framework",
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
@@ -283,19 +276,6 @@
 			shellPath = /bin/sh;
 			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
 			showEnvVarsInLog = 0;
-		};
-		A8757C9D20481E6C00F51E94 /* ShellScript */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputPaths = (
-			);
-			outputPaths = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "if which swiftlint >/dev/null; then\nswiftlint\nelse\necho \"warning: SwiftLint not installed, download from https://github.com/realm/SwiftLint\"\nfi";
 		};
 /* End PBXShellScriptBuildPhase section */
 

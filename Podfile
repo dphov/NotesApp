@@ -7,5 +7,4 @@ target 'NotesApp' do
 
   # Pods for NotesApp
   pod 'RealmSwift'
-  pod 'SwipeCellKit'
 end

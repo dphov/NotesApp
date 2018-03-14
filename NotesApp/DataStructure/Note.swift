@@ -30,10 +30,6 @@ class Note: Object {
   }
 }
 
-class NotesList: Object {
-  let list = List<Note>()
-}
-
 enum ActionType {
   case noteCreation
   case noteModification

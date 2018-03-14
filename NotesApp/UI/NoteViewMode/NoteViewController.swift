@@ -12,7 +12,6 @@ class NoteViewController: UIViewController {
 
   var realmManager = RealmManager()
 
-
   @IBAction func editButtonClicked(_ sender: Any) {
     print("Edit button clicked!")
   }
@@ -26,15 +25,23 @@ class NoteViewController: UIViewController {
 
   override func viewDidLoad() {
     super.viewDidLoad()
+
   }
 
   override func viewWillAppear(_ animated: Bool) {
-    // swiftlint:disable:next force_cast
-    var specificNote = realmManager.getSpecificObject(type: Note.self, primaryKey: noteObject.id) as! Note
+    
+    let specificNote = realmManager.getSpecificObject(type: Note.self, primaryKey: noteObject.id) as! Note
+
     print("specificNote \(specificNote)")
     self.title = specificNote.title
     noteDescriptionTextView.text = specificNote.noteDescription
-    noteCreationTimeLabel.text = String(describing: specificNote.creationTime)
+
+    let dateFormatter = DateFormatter()
+    let date = specificNote.creationTime
+    dateFormatter.locale = Locale(identifier: "ru_RU")
+    dateFormatter.setLocalizedDateFormatFromTemplate("d MMMM yyyy HH:mm")
+    
+    noteCreationTimeLabel.text = dateFormatter.string(from: date)
   }
 
   override func didReceiveMemoryWarning() {
@@ -59,3 +66,4 @@ class NoteViewController: UIViewController {
 
 
 }
+

@@ -6,9 +6,8 @@
 //
 
 import UIKit
-import SwipeCellKit
 
-class NotesCell: SwipeTableViewCell {
+class NotesCell: UITableViewCell {
   @IBOutlet var titleLabel: UILabel!
   @IBOutlet var dateLabel: UILabel!
 

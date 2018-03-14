@@ -8,31 +8,49 @@
 
 import UIKit
 import RealmSwift
-import SwipeCellKit
+
 
 class NotesListViewController: UITableViewController {
-  // swiftlint:disable:next force_try
+  var notificationToken: NotificationToken? = nil
   lazy var realm = try! Realm()
-  var defaultOptions = SwipeTableOptions()
   
-  var notesList: Results<Note> {
+  var results: Results<Note> {
     get {
-      return realm.objects(Note.self)
+      return realm.objects(Note.self).sorted(byKeyPath: "creationTime", ascending: false)
     }
   }
-  var sortedNotesList: Results<Note>!
-  
-  @IBAction func addButtonClicked(_ sender: Any) {
-  }
+
   
   override func viewDidLoad() {
     super.viewDidLoad()
-    sortedNotesList = notesList.sorted(byKeyPath: "creationTime", ascending: false)
+
+
+
+    notificationToken = results.observe { (changes: RealmCollectionChange) in
+      guard let tableView = self.tableView else { return }
+
+      switch changes {
+      case .initial: tableView.reloadData()
+      case .update(_, let deletions, let insertions, let updates):
+        let fromRow = {(row: Int) in
+          return IndexPath(row: row, section: 0)}
+        tableView.beginUpdates()
+        tableView.deleteRows(at: deletions.map(fromRow), with: .automatic)
+        tableView.insertRows(at: insertions.map(fromRow), with: .automatic)
+        tableView.reloadRows(at: updates.map(fromRow), with: .none)
+        tableView.endUpdates()
+      case .error(let error): fatalError("\(error)")
+      }
+    }
+  }
+
+  deinit {
+    notificationToken?.invalidate()
   }
   
   override func viewWillAppear(_ animated: Bool) {
     super.viewWillAppear(true)
-    tableView.reloadData()
+
   }
   
   override func didReceiveMemoryWarning() {
@@ -43,65 +61,69 @@ class NotesListViewController: UITableViewController {
   override func numberOfSections(in tableView: UITableView) -> Int {
     return 1
   }
+
   
   override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-    return sortedNotesList.count
+    return results.count
   }
   
   override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
     let cell = tableView.dequeueReusableCell(withIdentifier: "NotesCell", for: indexPath) as? NotesCell
-    cell?.delegate = self
-    let rowItem = sortedNotesList[indexPath.row]
+
+    let rowItem = results[indexPath.row]
     
     cell?.titleLabel!.text = rowItem.title
-    cell?.dateLabel!.text = String(describing: rowItem.creationTime)
+
+    let dateFormatter = DateFormatter()
+    let date = rowItem.creationTime
+    dateFormatter.locale = Locale(identifier: "ru_RU")
+    dateFormatter.setLocalizedDateFormatFromTemplate("d MMMM yyyy HH:mm")
+    
+    cell?.dateLabel!.text = dateFormatter.string(from: date)
     
     return cell!
   }
   
   // MARK: - Prepare for segue
   override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-    if segue.identifier == "intoNoteCreationView"{
-      
+
+    switch segue.identifier! {
+    case "intoNoteCreationView":
       let destinationVC = segue.destination as? NoteEditViewController
       destinationVC?.mode = ActionType.noteCreation
-      
-    } else if segue.identifier == "intoNoteView" {
-      
+    case "intoNoteView":
       if let indexPath = self.tableView.indexPathForSelectedRow {
         let selectedRow = indexPath.row
-        var selectedNote: Note! = self.sortedNotesList[selectedRow]
+        let selectedNote: Note! = self.results[selectedRow]
         let destinationVC = segue.destination as? NoteViewController
         destinationVC?.noteObject = selectedNote
       }
-      
-    }
-    
-  }
-  
-  
-}
+    default:
+      fatalError("Segue does not exist")
 
-extension NotesListViewController: SwipeTableViewCellDelegate  {
-  func tableView(_ tableView: UITableView, editActionsForRowAt indexPath: IndexPath, for orientation: SwipeActionsOrientation) -> [SwipeAction]? {
-    guard orientation == .left else { return nil }
-    let deleteAction = SwipeAction(style: .destructive, title: "Delete") { (action, indexPath) in
-      
-      
-      // swiftlint:disable:next force_try
-      try! self.realm.write ({
-        self.realm.delete(self.sortedNotesList[indexPath.row])
-      })
-      action.fulfill(with: .delete)
     }
-    return [deleteAction]
-  }
-  
-  func tableView(_ tableView: UITableView, editActionsOptionsForRowAt indexPath: IndexPath, for orientation: SwipeActionsOrientation) -> SwipeTableOptions {
-    var options = SwipeTableOptions()
-    options.expansionStyle = .destructive
-    options.transitionStyle = defaultOptions.transitionStyle
-    return options
   }
 }
 
+// MARK: - Deletion
+extension NotesListViewController  {
+
+  override func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCellEditingStyle, forRowAt indexPath: IndexPath) {
+    if editingStyle == .delete {
+
+      tableView.beginUpdates()
+      tableView.deleteRows(at: [indexPath], with: .fade)
+
+      let objectToDelete = self.results[indexPath.row]
+      self.realm.beginWrite()
+      self.realm.delete(objectToDelete)
+      try! self.realm.commitWrite(withoutNotifying: [self.notificationToken!])
+
+      tableView.endUpdates()
+    }
+  }
+
+
+
+
+}

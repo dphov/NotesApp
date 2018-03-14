@@ -10,7 +10,7 @@ import Foundation
 import RealmSwift
 
 class RealmManager {
-  // swiftlint:disable:next force_try
+  
   let realm = try! Realm()
 
   // delete table
