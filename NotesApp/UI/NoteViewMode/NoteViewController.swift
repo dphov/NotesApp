@@ -15,7 +15,6 @@ class NoteViewController: UIViewController {
   @IBAction func editButtonClicked(_ sender: Any) {
     print("Edit button clicked!")
   }
-
   
   @IBOutlet weak var noteDescriptionTextView: UITextView!
   
@@ -61,9 +60,6 @@ class NoteViewController: UIViewController {
       destinationVC?.noteObject = noteObject
       destinationVC?.mode = ActionType.noteModification
     }
-
   }
-
-
 }
 

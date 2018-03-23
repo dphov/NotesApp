@@ -8,7 +8,6 @@
 import UIKit
 
 class NotesCell: UITableViewCell {
-  @IBOutlet var titleLabel: UILabel!
-  @IBOutlet var dateLabel: UILabel!
-
+    @IBOutlet var titleLabel: UILabel!
+    @IBOutlet var dateLabel: UILabel!
 }
